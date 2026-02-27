@@ -113,9 +113,19 @@
                 flex-direction: column !important;
                 gap: 1rem !important;
                 align-items: center !important;
+                justify-content: center !important;
             }
-            .tablet-center {
+            .mobile-center {
                 text-align: center !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            .mobile-button-center {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 100% !important;
             }
             .nav-links {
                 display: none;
@@ -406,7 +416,7 @@
                 Plateforme institutionnelle de validation pour cartes de recharge prépayées. 
                 Détectez les fraudes et vérifiez vos codes en temps réel.
             </p>
-            <div class="flex justify-center space-x-4 tablet-stack mobile-center">
+            <div class="flex justify-center space-x-4 tablet-stack mobile-center mobile-button-center">
                 <a href="submit.html" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold hover-scale mobile-full">
                     DÉBUTER LA VÉRIFICATION
                 </a>
