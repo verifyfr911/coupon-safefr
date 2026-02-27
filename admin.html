@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access - CouponSafe</title>
+    <meta name="description" content="Accès administrateur sécurisé">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">CouponSafe™</span>
+                    <span class="text-sm text-gray-400">ESTABLISHED 2020</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="index.html" class="hover:text-blue-400 transition">ACCUEIL</a>
+                    <a href="track.html" class="hover:text-blue-400 transition">VÉRIFICATION</a>
+                    <a href="about.html" class="hover:text-blue-400 transition">PROTOCOLE</a>
+                    <a href="submit.html" class="hover:text-blue-400 transition">ESPACE PARTENAIRE</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="gradient-bg py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-md mx-auto">
+                <div class="bg-gray-800 p-8 rounded-lg border border-gray-700">
+                    <h1 class="text-3xl font-bold mb-6 text-center">Accès Administrateur</h1>
+                    <p class="text-gray-400 text-center mb-8">
+                        Accès sécurisé réservé au personnel autorisé
+                    </p>
+                    
+                    <form id="adminLogin" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Identifiant</label>
+                            <input type="text" placeholder="admin@couponsafe.network" 
+                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Mot de passe</label>
+                            <input type="password" placeholder="••••••••" 
+                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Code 2FA</label>
+                            <input type="text" placeholder="000000" maxlength="6" 
+                                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6 py-3 rounded-lg font-semibold">
+                            Se Connecter
+                        </button>
+                    </form>
+                    
+                    <div class="mt-6 text-center">
+                        <a href="#" class="text-sm text-gray-400 hover:text-white">Mot de passe oublié?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Notice -->
+    <section class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-2xl font-bold mb-8">Sécurité Administrateur</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <div class="w-12 h-12 bg-red-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold mb-2">Authentification Multi-Facteurs</h3>
+                        <p class="text-gray-400 text-sm">Protection renforcée avec 2FA obligatoire</p>
+                    </div>
+                    
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <div class="w-12 h-12 bg-yellow-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 016 0v2h2V7a5 5 0 00-5-5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold mb-2">Sessions Limitées</h3>
+                        <p class="text-gray-400 text-sm">Déconnexion automatique après inactivité</p>
+                    </div>
+                    
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <div class="w-12 h-12 bg-green-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 000 2H6a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2 1 1 0 100-2 2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-bold mb-2">Audit de Connexion</h3>
+                        <p class="text-gray-400 text-sm">Traçabilité complète des accès administrateur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Warning -->
+    <section class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-red-900 border border-red-700 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">⚠️ AVERTISSEMENT DE SÉCURITÉ</h3>
+                    <p class="text-red-300 mb-4">
+                        Cet accès est strictement réservé au personnel autorisé de CouponSafe™. 
+                        Toute tentative d'accès non autorisée sera immédiatement signalée et 
+                        poursuivie conformément aux lois applicables.
+                    </p>
+                    <p class="text-red-300">
+                        Adresse IP enregistrée: <span id="userIP">192.168.1.1</span><br>
+                        Heure de connexion: <span id="currentTime"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-gray-400">
+                <p>© 2020-2026 CouponSafe Network. Global Cyber-Defense Unit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Update current time
+        document.getElementById('currentTime').textContent = new Date().toLocaleString('fr-FR');
+        
+        // Simulate IP address (in real app, this would come from server)
+        document.getElementById('userIP').textContent = '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+        
+        // Handle login form
+        document.getElementById('adminLogin').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Fonctionnalité de démonstration - Accès administrateur simulé');
+        });
+    </script>
+</body>
+</html>

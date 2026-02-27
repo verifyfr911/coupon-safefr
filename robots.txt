@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://couponsafe.com/sitemap.xml
+
+# Block common non-content paths
+Disallow: /admin/
+Disallow: /*.json$
+Disallow: /temp/
+Disallow: /cache/
+
+# Allow search engines to crawl important content
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

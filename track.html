@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Management Platform</title>
+    <meta name="description" content="Plateforme sécurisée de gestion de codes de recharge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e40af',
+                        'secondary': '#374151',
+                        'accent': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glass-effect-light {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        /* Dark mode styles */
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        /* Light mode styles */
+        .light .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .light {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .light .bg-gray-800 {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+        }
+        .light .bg-gray-700 {
+            background-color: #f1f5f9;
+        }
+        .light .bg-gray-600 {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-900 {
+            background-color: #f8fafc;
+        }
+        .light .text-gray-400 {
+            color: #64748b;
+        }
+        .light .text-gray-300 {
+            color: #475569;
+        }
+        .light .text-gray-500 {
+            color: #94a3b8;
+        }
+        .light .border-gray-700 {
+            border-color: #e2e8f0;
+        }
+        .light .border-gray-500 {
+            border-color: #cbd5e1;
+        }
+        .light .border-gray-600 {
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 select {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 select:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 textarea {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 textarea:focus {
+            border-color: #3b82f6;
+        }
+        .light .placeholder-gray-400::placeholder {
+            color: #94a3b8;
+        }
+        /* Additional text visibility fixes for light mode */
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-gray-200 {
+            color: #64748b !important;
+        }
+        .light .text-gray-100 {
+            color: #475569 !important;
+        }
+        .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+            color: #1e293b !important;
+        }
+        .light p, .light span, .light div {
+            color: #334155 !important;
+        }
+        .light .text-gray-400 {
+            color: #64748b !important;
+        }
+        .light .text-gray-300 {
+            color: #475569 !important;
+        }
+        .light .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        .light .text-blue-400 {
+            color: #2563eb !important;
+        }
+        .light .text-green-400 {
+            color: #16a34a !important;
+        }
+        .light .text-yellow-400 {
+            color: #ca8a04 !important;
+        }
+        .light .text-red-400 {
+            color: #dc2626 !important;
+        }
+        .light .text-purple-400 {
+            color: #9333ea !important;
+        }
+        .light .text-orange-400 {
+            color: #ea580c !important;
+        }
+        .light .text-indigo-400 {
+            color: #4f46e5 !important;
+        }
+        /* Button text fixes */
+        .light button {
+            color: #1e293b !important;
+        }
+        .light .bg-gradient-to-r button {
+            color: #ffffff !important;
+        }
+        /* Link fixes */
+        .light a {
+            color: #2563eb !important;
+        }
+        .light a:hover {
+            color: #1d4ed8 !important;
+        }
+    </style>
+    <!-- Theme Toggle Script -->
+    <script>
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.add(currentTheme);
+        
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.classList.remove(currentTheme);
+            html.classList.add(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">CouponSafe™</span>
+                    <span class="text-sm text-gray-400">ESTABLISHED 2020</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="index.html" class="hover:text-blue-400 transition">ACCUEIL</a>
+                    <a href="track.html" class="hover:text-blue-400 transition">VÉRIFICATION</a>
+                    <a href="about.html" class="hover:text-blue-400 transition">PROTOCOLE</a>
+                    <a href="submit.html" class="hover:text-blue-400 transition">ESPACE PARTENAIRE</a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors" title="Toggle theme">
+                        <svg class="w-5 h-5 text-yellow-400 dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                        </svg>
+                        <svg class="w-5 h-5 text-gray-300 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-6">TRACKER VOTRE VÉRIFICATION</h1>
+            <p class="text-xl max-w-3xl mx-auto mb-8">
+                Entrez votre numéro de référence pour consulter l'état d'avancement de l'audit en temps réel.
+            </p>
+        </div>
+    </section>
+
+    <!-- Tracking Form -->
+    <section class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-gray-700 p-8 rounded-lg">
+                    <form id="trackingForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Numéro de Référence</label>
+                            <input type="text" id="referenceNumber" placeholder="CS-2024-XXXXX" 
+                                   class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6 py-3 rounded-lg font-semibold hover-scale">
+                            SUIVRE LA VÉRIFICATION
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="py-16 bg-gray-800 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-700 p-8 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-6">Résultats de la Vérification</h2>
+                    <div id="trackingResults" class="space-y-4">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Indicators -->
+    <section class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">États de Vérification</h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold mb-2">EN ATTENTE</h3>
+                    <p class="text-sm text-gray-400">Votre demande est en cours de traitement</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 000 2H6a2 2 0 00-2 2v6a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2 1 1 0 100-2 2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold mb-2">EN TRAITEMENT</h3>
+                    <p class="text-sm text-gray-400">Analyse de sécurité en cours</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold mb-2">VALIDÉ</h3>
+                    <p class="text-sm text-gray-400">Coupon vérifié avec succès</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold mb-2">REJETÉ</h3>
+                    <p class="text-sm text-gray-400">Coupon invalide ou frauduleux</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-2">
+                        <li><a href="track.html" class="text-gray-400 hover:text-white">Vérification</a></li>
+                        <li><a href="submit.html" class="text-gray-400 hover:text-white">Soumission</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-white">Protocole</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Légal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="terms.html" class="text-gray-400 hover:text-white">CGU / CGV</a></li>
+                        <li><a href="privacy.html" class="text-gray-400 hover:text-white">Confidentialité</a></li>
+                        <li><a href="admin.html" class="text-gray-400 hover:text-white">Admin Access</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Sécurité Directe</h4>
+                    <p class="text-gray-400 text-sm">
+                        "Ne partagez jamais vos codes avec des tiers. Nous sommes le seul canal officiel."
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2020-2026 CouponSafe Network. Global Cyber-Defense Unit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('trackingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const referenceNumber = document.getElementById('referenceNumber').value;
+            const resultsSection = document.getElementById('resultsSection');
+            const trackingResults = document.getElementById('trackingResults');
+            
+            // Show results section
+            resultsSection.classList.remove('hidden');
+            
+            // Simulate tracking results
+            const statuses = ['EN ATTENTE', 'EN TRAITEMENT', 'VALIDÉ', 'REJETÉ'];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            const statusColors = {
+                'EN ATTENTE': 'text-yellow-500',
+                'EN TRAITEMENT': 'text-blue-500',
+                'VALIDÉ': 'text-green-500',
+                'REJETÉ': 'text-red-500'
+            };
+            
+            trackingResults.innerHTML = `
+                <div class="bg-gray-600 p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold">Numéro de Référence:</span>
+                        <span>${referenceNumber}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold">Statut:</span>
+                        <span class="${statusColors[randomStatus]} font-bold">${randomStatus}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold">Date de Soumission:</span>
+                        <span>${new Date().toLocaleDateString('fr-FR')}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold">Heure de Soumission:</span>
+                        <span>${new Date().toLocaleTimeString('fr-FR')}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold">Temps de Traitement:</span>
+                        <span>${Math.floor(Math.random() * 30) + 1} minutes</span>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-600 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2">Détails du Traitement</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>Vérification Initiale:</span>
+                            <span class="text-green-500">✓ Complétée</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Validation de Sécurité:</span>
+                            <span class="text-green-500">✓ Complétée</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Analyse Anti-Fraude:</span>
+                            <span class="${randomStatus === 'VALIDÉ' ? 'text-green-500' : 'text-yellow-500'}">
+                                ${randomStatus === 'VALIDÉ' ? '✓ Complétée' : '⏳ En cours'}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Vérification Finale:</span>
+                            <span class="${randomStatus === 'VALIDÉ' ? 'text-green-500' : 'text-gray-500'}">
+                                ${randomStatus === 'VALIDÉ' ? '✓ Complétée' : '⏸ En attente'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${randomStatus === 'VALIDÉ' ? `
+                <div class="bg-green-900 border border-green-700 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2 text-green-400">✓ Vérification Réussie</h3>
+                    <p class="text-green-300">Votre coupon a été validé avec succès. Les fonds sont maintenant disponibles.</p>
+                </div>
+                ` : randomStatus === 'REJETÉ' ? `
+                <div class="bg-red-900 border border-red-700 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2 text-red-400">✗ Vérification Échouée</h3>
+                    <p class="text-red-300">Le coupon soumis a été identifié comme invalide ou potentiellement frauduleux.</p>
+                </div>
+                ` : `
+                <div class="bg-blue-900 border border-blue-700 p-4 rounded-lg">
+                    <h3 class="font-bold mb-2 text-blue-400">⏳ Traitement en Cours</h3>
+                    <p class="text-blue-300">Votre demande est en cours de traitement. Veuillez revenir plus tard pour une mise à jour.</p>
+                </div>
+                `}
+            `;
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

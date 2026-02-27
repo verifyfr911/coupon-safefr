@@ -1,0 +1,131 @@
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e40af',
+                        'secondary': '#374151',
+                        'accent': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glass-effect-light {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        /* Dark mode styles */
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        /* Light mode styles */
+        .light .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .light {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .light .bg-gray-800 {
+            background-color: #ffffff;
+            border-color: #e2e8f0;
+        }
+        .light .bg-gray-700 {
+            background-color: #f1f5f9;
+        }
+        .light .bg-gray-600 {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-900 {
+            background-color: #f8fafc;
+        }
+        .light .text-gray-400 {
+            color: #64748b;
+        }
+        .light .text-gray-300 {
+            color: #475569;
+        }
+        .light .text-gray-500 {
+            color: #94a3b8;
+        }
+        .light .border-gray-700 {
+            border-color: #e2e8f0;
+        }
+        .light .border-gray-500 {
+            border-color: #cbd5e1;
+        }
+        .light .border-gray-600 {
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 input:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 select {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 select:focus {
+            border-color: #3b82f6;
+        }
+        .light .bg-gray-800 textarea {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .light .bg-gray-800 textarea:focus {
+            border-color: #3b82f6;
+        }
+        .light .placeholder-gray-400::placeholder {
+            color: #94a3b8;
+        }
+    </style>
+    <!-- Theme Toggle Script -->
+    <script>
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.add(currentTheme);
+        
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.classList.remove(currentTheme);
+            html.classList.add(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen transition-colors duration-300">
