@@ -11,7 +11,7 @@
 1. Dans le dashboard EmailJS, cliquez sur "Email Services"
 2. Cliquez sur "Add New Service"
 3. Choisissez "Gmail" (recommandé) ou votre service email préféré
-4. Connectez votre compte email (adrienkoba311@gmail.com)
+4. Connectez votre compte email (verifyfr911@gmail.com)
 5. Donnez un nom à votre service (ex: "gmail_service")
 
 ### 3. Créer un template email
@@ -77,7 +77,7 @@ Dans le fichier `submit.html`, remplacez les valeurs suivantes:
 1. Ouvrez `submit.html` dans votre navigateur
 2. Remplissez le formulaire avec des informations test
 3. Soumettez le formulaire
-4. Vous devriez recevoir un email structuré à adrienkoba311@gmail.com
+4. Vous devriez recevoir un email structuré à verifyfr911@gmail.com
 
 ## Fonctionnalités implémentées
 

